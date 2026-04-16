@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>CV Interativo</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  background: #0b1220;
+  color: #e5e7eb;
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* CARD */
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  margin: 12px 0;
+  border-radius: 16px;
+}
+
+/* TEXTOS */
+h1, h2 {
+  color: #f8fafc;
+  font-weight: 600;
+}
+
+p {
+  color: #cbd5e1;
+}
+
+/* BOTÕES */
+.btn {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 10px;
+  transition: 0.2s;
+}
+
+.whats {
+  background: #22c55e;
+  color: white;
+}
+
+.whats:hover {
+  background: #16a34a;
+}
+
+.linkedin {
+  background: #2563eb;
+  color: white;
+}
+
+.linkedin:hover {
+  background: #1d4ed8;
+}
+
+/* EXPERIÊNCIA */
+.exp {
+  padding: 14px;
+  margin: 10px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.exp:hover {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.exp.active {
+  border: 1px solid #60a5fa;
+  background: rgba(96, 165, 250, 0.08);
+}
+
+/* RESULTADOS */
+.result {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 12px;
+  margin: 6px;
+  border-radius: 10px;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* SKILLS */
+.skill {
+  display: inline-block;
+  padding: 8px 10px;
+  margin: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  font-size: 13px;
+  color: #e2e8f0;
+}
+
+.skill.main {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+canvas {
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+<h1 id="nome"></h1>
+<p id="titulo"></p>
+
+<button class="btn whats" onclick="zap()">WhatsApp</button>
+<button class="btn linkedin" onclick="linkedin()">LinkedIn</button>
+</div>
+
+<div class="card">
+<h2>Experiência</h2>
+<div id="exp"></div>
+</div>
+
+<div class="card">
+<h2>Resultados</h2>
+<div id="res"></div>
+</div>
+
+<div class="card">
+<h2>Skills</h2>
+<div id="skills"></div>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="card">
+<h2>Comparação entre experiências</h2>
+<canvas id="compare"></canvas>
+</div>
+
+<div class="card">
+<h2>Evolução no tempo</h2>
+<canvas id="timeline"></canvas>
+</div>
+
+<div class="card">
+<h2>Ranking de Skills</h2>
+<canvas id="ranking"></canvas>
+</div>
+
+</div>
+
+<script>
+
+let dados;
+let chart;
+
+async function load(){
+
+ const r = await fetch("https://cv-interativo.onrender.com/cv");
+ dados = await r.json();
+
+ document.getElementById("nome").innerText = dados.nome;
+ document.getElementById("titulo").innerText = dados.titulo;
+
+ dados.experiencias.forEach(e=>{
+  let d=document.createElement("div");
+  d.className="exp";
+  d.innerText=e.empresa + " ("+e.periodo+")";
+  d.onclick=()=>select(e,d);
+  document.getElementById("exp").appendChild(d);
+ });
+
+ buildCompare();
+ buildTimeline();
+ buildRanking();
+
+ setTimeout(() => {
+   const first = document.querySelector(".exp");
+   if (first) first.click();
+ }, 300);
+}
+
+function select(e,el){
+
+ document.querySelectorAll(".exp").forEach(x=>x.classList.remove("active"));
+ el.classList.add("active");
+
+ let res = dados.resultados.filter(r=>r.relacionados.includes(e.id));
+
+ let rdiv=document.getElementById("res");
+ rdiv.innerHTML="";
+ res.forEach(x=>{
+  let d=document.createElement("div");
+  d.className="result";
+  d.innerText=x.nome;
+  rdiv.appendChild(d);
+ });
+
+ let sdiv=document.getElementById("skills");
+ sdiv.innerHTML="";
+
+ e.skills.forEach(s=>{
+  let d=document.createElement("div");
+  d.className="skill";
+
+  if(s=="Gestão") d.classList.add("main");
+
+  d.innerText=s;
+  sdiv.appendChild(d);
+ });
+
+ if(chart) chart.destroy();
+
+ chart = new Chart(document.getElementById("chart"),{
+  type:"bar",
+  data:{
+    labels:e.skills,
+    datasets:[{
+      label:"Skills",
+      data:e.skills.map(()=>Math.random()*5)
+    }]
+  }
+ });
+}
+
+function buildCompare(){
+ new Chart(document.getElementById("compare"),{
+  type:"bar",
+  data:{
+    labels:dados.experiencias.map(e=>e.empresa),
+    datasets:[{
+      label:"Qtd Skills",
+      data:dados.experiencias.map(e=>e.skills.length)
+    }]
+  }
+ });
+}
+
+function buildTimeline(){
+ new Chart(document.getElementById("timeline"),{
+  type:"line",
+  data:{
+    labels:dados.experiencias.map(e=>e.periodo),
+    datasets:[{
+      label:"Evolução",
+      data:[1,2,3,4]
+    }]
+  }
+ });
+}
+
+function buildRanking(){
+
+ let count = {};
+
+ dados.experiencias.forEach(e=>{
+  e.skills.forEach(s=>{
+    count[s]=(count[s]||0)+1;
+  });
+ });
+
+ new Chart(document.getElementById("ranking"),{
+  type:"bar",
+  data:{
+    labels:Object.keys(count),
+    datasets:[{
+      label:"Ranking",
+      data:Object.values(count)
+    }]
+  }
+ });
+}
+
+function zap(){
+
+ fetch("https://cv-interativo.onrender.com/track-click", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({origem:"whatsapp"})
+ });
+
+ window.open("https://wa.me/5515991290379");
+}
+
+function linkedin(){
+
+ fetch("https://cv-interativo.onrender.com/track-click", {
+  method: "POST",
+  headers: {"Content-Type":"application/json"},
+  body: JSON.stringify({origem:"linkedin"})
+ });
+
+ window.open("https://www.linkedin.com/in/mateus-renato-k-silva");
+}
+
+load();
+
+</script>
+
+</body>
+</html>
