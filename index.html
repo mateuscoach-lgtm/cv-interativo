@@ -8,8 +8,8 @@
 
 <style>
 body {
-  background: #0b1220;
-  color: #e5e7eb;
+  background: linear-gradient(135deg, #f5f1ed 0%, #ede6df 100%);
+  color: #5a4a42;
   font-family: Arial, sans-serif;
   margin: 0;
 }
@@ -22,22 +22,23 @@ body {
 
 /* CARD */
 .card {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 252, 248, 0.95);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(210, 190, 170, 0.3);
   padding: 20px;
   margin: 12px 0;
   border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(139, 90, 43, 0.08);
 }
 
 /* TEXTOS */
 h1, h2 {
-  color: #f8fafc;
+  color: #6b4423;
   font-weight: 600;
 }
 
 p {
-  color: #cbd5e1;
+  color: #8b7355;
 }
 
 /* BOTÕES */
@@ -52,51 +53,57 @@ p {
 }
 
 .whats {
-  background: #22c55e;
-  color: white;
+  background: #a8d5ba;
+  color: #4a5f4a;
 }
 
 .whats:hover {
-  background: #16a34a;
+  background: #8fc5a3;
 }
 
 .linkedin {
-  background: #2563eb;
-  color: white;
+  background: #d4a5a5;
+  color: #5a3a3a;
 }
 
 .linkedin:hover {
-  background: #1d4ed8;
+  background: #c48989;
 }
 
 /* EXPERIÊNCIA */
 .exp {
   padding: 14px;
   margin: 10px 0;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(245, 235, 220, 0.8);
   border-radius: 12px;
   cursor: pointer;
   transition: 0.2s;
   border: 1px solid transparent;
+  color: #5a4a42;
 }
 
 .exp:hover {
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(180, 140, 100, 0.4);
+  background: rgba(240, 225, 205, 0.9);
 }
 
 .exp.active {
-  border: 1px solid #60a5fa;
-  background: rgba(96, 165, 250, 0.08);
+  border: 1px solid #b8956a;
+  background: rgba(184, 149, 106, 0.15);
+  color: #6b4423;
+  font-weight: 600;
 }
 
 /* RESULTADOS */
 .result {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(184, 149, 106, 0.15);
+  color: #6b4423;
   padding: 10px 12px;
   margin: 6px;
   border-radius: 10px;
   display: inline-block;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(184, 149, 106, 0.3);
+  font-weight: 500;
 }
 
 /* SKILLS */
@@ -104,16 +111,18 @@ p {
   display: inline-block;
   padding: 8px 10px;
   margin: 5px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(220, 200, 170, 0.4);
   border-radius: 8px;
   font-size: 13px;
-  color: #e2e8f0;
+  color: #5a4a42;
+  border: 1px solid rgba(184, 149, 106, 0.2);
 }
 
 .skill.main {
-  background: rgba(34, 197, 94, 0.15);
-  color: #86efac;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(168, 213, 186, 0.3);
+  color: #4a5f4a;
+  border: 1px solid rgba(168, 213, 186, 0.5);
+  font-weight: 600;
 }
 
 canvas {
@@ -235,7 +244,24 @@ function select(e,el){
     labels:e.skills,
     datasets:[{
       label:"Skills",
-      data:e.skills.map(()=>Math.random()*5)
+      data:e.skills.map(()=>Math.random()*5),
+      backgroundColor: [
+        'rgba(184, 149, 106, 0.8)',
+        'rgba(212, 165, 165, 0.8)',
+        'rgba(168, 213, 186, 0.8)',
+        'rgba(220, 200, 170, 0.8)',
+        'rgba(200, 170, 150, 0.8)',
+        'rgba(190, 160, 140, 0.8)',
+      ],
+      borderColor: [
+        'rgb(184, 149, 106)',
+        'rgb(212, 165, 165)',
+        'rgb(168, 213, 186)',
+        'rgb(220, 200, 170)',
+        'rgb(200, 170, 150)',
+        'rgb(190, 160, 140)',
+      ],
+      borderWidth: 1
     }]
   }
  });
@@ -248,7 +274,10 @@ function buildCompare(){
     labels:dados.experiencias.map(e=>e.empresa),
     datasets:[{
       label:"Qtd Skills",
-      data:dados.experiencias.map(e=>e.skills.length)
+      data:dados.experiencias.map(e=>e.skills.length),
+      backgroundColor: 'rgba(184, 149, 106, 0.8)',
+      borderColor: 'rgb(184, 149, 106)',
+      borderWidth: 1
     }]
   }
  });
@@ -261,7 +290,11 @@ function buildTimeline(){
     labels:dados.experiencias.map(e=>e.periodo),
     datasets:[{
       label:"Evolução",
-      data:[1,2,3,4]
+      data:[1,2,3,4],
+      borderColor: 'rgb(184, 149, 106)',
+      backgroundColor: 'rgba(184, 149, 106, 0.1)',
+      borderWidth: 2,
+      fill: true
     }]
   }
  });
@@ -283,7 +316,24 @@ function buildRanking(){
     labels:Object.keys(count),
     datasets:[{
       label:"Ranking",
-      data:Object.values(count)
+      data:Object.values(count),
+      backgroundColor: [
+        'rgba(184, 149, 106, 0.8)',
+        'rgba(212, 165, 165, 0.8)',
+        'rgba(168, 213, 186, 0.8)',
+        'rgba(220, 200, 170, 0.8)',
+        'rgba(200, 170, 150, 0.8)',
+        'rgba(190, 160, 140, 0.8)',
+      ],
+      borderColor: [
+        'rgb(184, 149, 106)',
+        'rgb(212, 165, 165)',
+        'rgb(168, 213, 186)',
+        'rgb(220, 200, 170)',
+        'rgb(200, 170, 150)',
+        'rgb(190, 160, 140)',
+      ],
+      borderWidth: 1
     }]
   }
  });
