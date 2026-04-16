@@ -6,13 +6,18 @@ import os
 
 app = FastAPI()
 
+# LIBERA ACESSO DO FRONTEND
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# =========================
+# DADOS DO CURRÍCULO
+# =========================
 CV_DATA = {
     "nome": "Mateus Renato",
     "titulo": "Gestão | Dados | Performance e Resultados",
@@ -48,7 +53,7 @@ CV_DATA = {
         {"nome": "Faturamento médio de R$ 70 mil/mês", "relacionados": ["house"]},
         {"nome": "Aumento da margem via otimização de cardápio", "relacionados": ["house"]},
         {"nome": "Expansão de carteira de 0 → +2000 clientes", "relacionados": ["original"]},
-        {"nome": "Atuação em clientes PF, PJ e alta renda", "relacionados": ["original"]},
+        {"nome": "Atuação com clientes PF, PJ e alta renda", "relacionados": ["original"]},
         {"nome": "LL de R$ 58 mil → R$ 70 mil", "relacionados": ["bradesco_pf"]},
         {"nome": "Redução de base com aumento de rentabilidade", "relacionados": ["bradesco_pf"]},
         {"nome": "Gestão de equipe de até 12 pessoas", "relacionados": ["bradesco_pj"]},
@@ -56,7 +61,9 @@ CV_DATA = {
     ]
 }
 
-# tracking simples
+# =========================
+# FUNÇÃO DE TRACKING
+# =========================
 def salvar_tracking(dado):
     arquivo = "tracking.json"
 
@@ -71,27 +78,40 @@ def salvar_tracking(dado):
     with open(arquivo, "w") as f:
         json.dump(dados, f, indent=4)
 
+# =========================
+# ROTAS
+# =========================
+
+# HOME
+@app.get("/")
+def home():
+    return {"mensagem": "API do CV interativo está online 🚀"}
+
+# CURRÍCULO
 @app.get("/cv")
 async def get_cv(request: Request, id: str = "anonimo"):
     salvar_tracking({
         "tipo": "visita",
         "empresa": id,
-        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "ip": request.client.host
+        "ip": request.client.host,
+        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
     return CV_DATA
 
+# CLIQUES (WhatsApp / LinkedIn)
 @app.post("/track-click")
 async def track_click(data: dict):
     salvar_tracking({
         "tipo": "click",
+        "origem": data.get("origem"),
         "empresa": data.get("empresa", "anonimo"),
         "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
-    return {"ok": True}
+    return {"status": "ok"}
 
+# VER TRACKING
 @app.get("/tracking")
-async def tracking():
+async def ver_tracking():
     if os.path.exists("tracking.json"):
         with open("tracking.json", "r") as f:
             return json.load(f)
