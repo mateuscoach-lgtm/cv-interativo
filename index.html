@@ -330,10 +330,11 @@ canvas {
 }
 
 .proficiency-fill {
-  background: linear-gradient(90deg, #a1a1a6 0%, #8f8f94 100%);
+  background: linear-gradient(90deg, #5a5a5f 0%, #3f3f46 100%);
   height: 100%;
   border-radius: 8px;
   transition: width 0.5s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* RESPONSIVO */
@@ -532,7 +533,7 @@ async function load(){
     loadFiltro();
 
     // Carregar gráficos globais
-    buildCompare();
+    buildCompare(null);
     buildRanking();
 
     // Selecionar primeira experiência
@@ -596,6 +597,9 @@ function select(el, expId) {
 
   const exp = dados.experiencias.find(e => e.id === expId);
   if (!exp) return;
+  
+  // Atualizar gráfico de comparação com destaque
+  buildCompare(expId);
 
   // Resultados
   let res = dados.resultados.filter(r => r.relacionados.includes(expId));
@@ -707,33 +711,31 @@ function select(el, expId) {
   });
 }
 
-function buildCompare(){
+function buildCompare(selectedExpId = null){
   if(compareChart) compareChart.destroy();
 
-  const colors = [
-    'rgba(161, 161, 166, 0.8)',
-    'rgba(180, 180, 185, 0.8)',
-    'rgba(122, 122, 127, 0.8)',
-    'rgba(143, 143, 148, 0.8)',
-  ];
-
-  const borderColors = [
-    'rgb(161, 161, 166)',
-    'rgb(180, 180, 185)',
-    'rgb(122, 122, 127)',
-    'rgb(143, 143, 148)',
-  ];
+  let labels = dados.experiencias.map(e => e.empresa);
+  let data = dados.experiencias.map(e => e.skills.length);
+  
+  // Cores: destaque para experiência selecionada, cinza para outras
+  const colors = dados.experiencias.map(e => 
+    e.id === selectedExpId ? 'rgba(90, 90, 95, 0.9)' : 'rgba(161, 161, 166, 0.6)'
+  );
+  
+  const borderColors = dados.experiencias.map(e => 
+    e.id === selectedExpId ? 'rgb(90, 90, 95)' : 'rgb(161, 161, 166)'
+  );
 
   compareChart = new Chart(document.getElementById("compare"), {
     type: "bar",
     data: {
-      labels: dados.experiencias.map(e => e.empresa),
+      labels: labels,
       datasets: [{
-        label: "Qtd Skills",
-        data: dados.experiencias.map(e => e.skills.length),
+        label: "Quantidade de Skills por Experiência",
+        data: data,
         backgroundColor: colors,
         borderColor: borderColors,
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 6
       }]
     },
@@ -741,7 +743,10 @@ function buildCompare(){
       responsive: true,
       plugins: {
         legend: {
-          display: false
+          labels: {
+            color: '#3f3f46',
+            font: { size: 12, weight: 'bold' }
+          }
         }
       },
       scales: {
