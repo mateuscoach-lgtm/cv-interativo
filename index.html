@@ -165,11 +165,6 @@ canvas {
 </div>
 
 <div class="card">
-<h2>Evolução no tempo</h2>
-<canvas id="timeline"></canvas>
-</div>
-
-<div class="card">
 <h2>Ranking de Skills</h2>
 <canvas id="ranking"></canvas>
 </div>
@@ -198,7 +193,6 @@ async function load(){
  });
 
  buildCompare();
- buildTimeline();
  buildRanking();
 
  setTimeout(() => {
@@ -244,24 +238,7 @@ function select(e,el){
     labels:e.skills,
     datasets:[{
       label:"Skills",
-      data:e.skills.map(()=>Math.random()*5),
-      backgroundColor: [
-        'rgba(184, 149, 106, 0.8)',
-        'rgba(212, 165, 165, 0.8)',
-        'rgba(168, 213, 186, 0.8)',
-        'rgba(220, 200, 170, 0.8)',
-        'rgba(200, 170, 150, 0.8)',
-        'rgba(190, 160, 140, 0.8)',
-      ],
-      borderColor: [
-        'rgb(184, 149, 106)',
-        'rgb(212, 165, 165)',
-        'rgb(168, 213, 186)',
-        'rgb(220, 200, 170)',
-        'rgb(200, 170, 150)',
-        'rgb(190, 160, 140)',
-      ],
-      borderWidth: 1
+      data:e.skills.map(()=>Math.random()*5)
     }]
   }
  });
@@ -274,27 +251,7 @@ function buildCompare(){
     labels:dados.experiencias.map(e=>e.empresa),
     datasets:[{
       label:"Qtd Skills",
-      data:dados.experiencias.map(e=>e.skills.length),
-      backgroundColor: 'rgba(184, 149, 106, 0.8)',
-      borderColor: 'rgb(184, 149, 106)',
-      borderWidth: 1
-    }]
-  }
- });
-}
-
-function buildTimeline(){
- new Chart(document.getElementById("timeline"),{
-  type:"line",
-  data:{
-    labels:dados.experiencias.map(e=>e.periodo),
-    datasets:[{
-      label:"Evolução",
-      data:[1,2,3,4],
-      borderColor: 'rgb(184, 149, 106)',
-      backgroundColor: 'rgba(184, 149, 106, 0.1)',
-      borderWidth: 2,
-      fill: true
+      data:dados.experiencias.map(e=>e.skills.length)
     }]
   }
  });
@@ -316,24 +273,7 @@ function buildRanking(){
     labels:Object.keys(count),
     datasets:[{
       label:"Ranking",
-      data:Object.values(count),
-      backgroundColor: [
-        'rgba(184, 149, 106, 0.8)',
-        'rgba(212, 165, 165, 0.8)',
-        'rgba(168, 213, 186, 0.8)',
-        'rgba(220, 200, 170, 0.8)',
-        'rgba(200, 170, 150, 0.8)',
-        'rgba(190, 160, 140, 0.8)',
-      ],
-      borderColor: [
-        'rgb(184, 149, 106)',
-        'rgb(212, 165, 165)',
-        'rgb(168, 213, 186)',
-        'rgb(220, 200, 170)',
-        'rgb(200, 170, 150)',
-        'rgb(190, 160, 140)',
-      ],
-      borderWidth: 1
+      data:Object.values(count)
     }]
   }
  });
