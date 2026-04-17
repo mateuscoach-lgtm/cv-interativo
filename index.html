@@ -583,13 +583,6 @@ function select(el, expId) {
   const exp = dados.experiencias.find(e => e.id === expId);
   if (!exp) return;
   
-  // Scroll automático em mobile
-  if (window.innerWidth <= 768) {
-    setTimeout(() => {
-      document.getElementById("res").scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300);
-  }
-  
   // Atualizar gráfico de comparação com destaque
   buildCompare(expId);
 
