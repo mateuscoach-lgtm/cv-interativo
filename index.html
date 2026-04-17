@@ -447,8 +447,8 @@ canvas {
   <!-- KPI CARDS -->
   <div class="kpi-section" id="kpis"></div>
 
-  <!-- FILTRO DE EXPERIÊNCIAS -->
-  <div class="filter-section">
+  <!-- FILTRO DE EXPERIÃNCIAS -->
+  <div class="filter-section" id="filtro-section">
     <div class="filter-title">Filtrar por Experiência</div>
     <div class="filter-items" id="filtro"></div>
   </div>
@@ -541,7 +541,7 @@ function loadKPIs() {
   const anosExperiencia = 16;
 
   const kpisHTML = `
-    <div class="kpi-card">
+    <div class="kpi-card" onclick="scrollToFilter()" style="cursor: pointer;">
       <div class="kpi-value">${totalExperiencias}</div>
       <div class="kpi-label">Experiências</div>
     </div>
@@ -828,6 +828,18 @@ function buildRanking(){
       }
     }
   });
+}
+
+function scrollToFilter() {
+  // Scroll automático para filtro em mobile
+  if (window.innerWidth <= 768) {
+    setTimeout(() => {
+      document.getElementById("filtro-section").scrollIntoView({ 
+        behavior: "smooth", 
+        block: "start" 
+      });
+    }, 100);
+  }
 }
 
 function zap(){
