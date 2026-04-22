@@ -1,863 +1,390 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mateus Renato - Currículo Interativo</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background: linear-gradient(135deg, #d4d4d8 0%, #e4e4e7 50%, #f0f0f3 100%);
-  color: #3f3f46;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  min-height: 100vh;
-}
-
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, #a1a1a6 0%, #b4b4b9 50%, #c9c9ce 100%);
-  padding: 48px 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.header-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  text-align: center;
-}
-
-h1 {
-  color: #ffffff;
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.subtitle {
-  color: rgba(255, 255, 255, 0.95);
-  font-size: 1.2rem;
-  margin-bottom: 24px;
-  font-weight: 500;
-}
-
-.header-buttons {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-header {
-  padding: 14px 28px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.btn-whats {
-  background: linear-gradient(135deg, #25d366 0%, #1eae5a 100%);
-  color: white;
-}
-
-.btn-whats:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
-}
-
-.btn-linkedin {
-  background: linear-gradient(135deg, #0a66c2 0%, #084a94 100%);
-  color: white;
-}
-
-.btn-linkedin:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(10, 102, 194, 0.4);
-}
-
-/* CONTAINER */
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 40px 24px;
-}
-
-/* KPI CARDS */
-.kpi-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.kpi-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  border-left: 5px solid #a1a1a6;
-}
-
-.kpi-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  border-left-color: #7a7a7f;
-}
-
-.kpi-value {
-  font-size: 3rem;
-  font-weight: 700;
-  color: #a1a1a6;
-  margin-bottom: 8px;
-}
-
-.kpi-label {
-  font-size: 0.85rem;
-  color: #a1a1a6;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-
-/* FILTRO */
-.filter-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 40px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-.filter-title {
-  color: #3f3f46;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-}
-
-.filter-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-}
-
-.filter-item {
-  padding: 16px 18px;
-  background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%);
-  border: 2px solid #e4e4e7;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #3f3f46;
-  font-weight: 600;
-  text-align: center;
-}
-
-.filter-item:hover {
-  background: linear-gradient(135deg, #e8e8eb 0%, #dcdce0 100%);
-  border-color: #a1a1a6;
-  color: #a1a1a6;
-  transform: translateY(-2px);
-}
-
-.filter-item.active {
-  background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%);
-  border-color: #7a7a7f;
-  color: #ffffff;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-/* GRID DE GRÁFICOS */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
-  gap: 28px;
-  margin-bottom: 40px;
-}
-
-.chart-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-.chart-title {
-  color: #3f3f46;
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 3px solid #d4d4d8;
-  padding-bottom: 14px;
-}
-
-canvas {
-  max-height: 340px;
-}
-
-/* RESULTADOS */
-.results-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  margin-bottom: 40px;
-}
-
-.results-title {
-  color: #3f3f46;
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 3px solid #d4d4d8;
-  padding-bottom: 14px;
-}
-
-.result-item {
-  background: linear-gradient(135deg, rgba(161, 161, 166, 0.08) 0%, rgba(180, 180, 185, 0.08) 100%);
-  border-left: 4px solid #a1a1a6;
-  padding: 16px 18px;
-  margin-bottom: 14px;
-  border-radius: 8px;
-  color: #3f3f46;
-  transition: all 0.3s ease;
-}
-
-.result-item:hover {
-  background: linear-gradient(135deg, rgba(161, 161, 166, 0.15) 0%, rgba(180, 180, 185, 0.15) 100%);
-  transform: translateX(6px);
-  border-left-color: #7a7a7f;
-}
-
-/* SKILLS */
-.skills-section {
-  background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-}
-
-.skills-title {
-  color: #3f3f46;
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin-bottom: 24px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 3px solid #d4d4d8;
-  padding-bottom: 14px;
-}
-
-.skills-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.skill-tag {
-  background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%);
-  border: 1px solid #e4e4e7;
-  color: #3f3f46;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.skill-tag:hover {
-  background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%);
-  border-color: #7a7a7f;
-  color: #ffffff;
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.skill-tag.main {
-  background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%);
-  border-color: #7a7a7f;
-  color: #ffffff;
-  font-weight: 600;
-}
-
-/* PROFICIÊNCIA */
-.proficiency-item {
-  margin-bottom: 20px;
-}
-
-.proficiency-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 0.9rem;
-}
-
-.proficiency-label {
-  color: #3f3f46;
-  font-weight: 600;
-}
-
-.proficiency-value {
-  color: #a1a1a6;
-  font-weight: 700;
-}
-
-.proficiency-bar {
-  background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%);
-  border-radius: 8px;
-  height: 12px;
-  overflow: hidden;
-  border: 1px solid #e4e4e7;
-}
-
-.proficiency-fill {
-  background: linear-gradient(90deg, #5a5a5f 0%, #3f3f46 100%);
-  height: 100%;
-  border-radius: 8px;
-  transition: width 0.5s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* RESPONSIVO */
-@media (max-width: 1024px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  h1 {
-    font-size: 2.2rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    padding: 32px 16px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .kpi-section {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .kpi-value {
-    font-size: 2.2rem;
-  }
-
-  .container {
-    padding: 24px 16px;
-  }
-
-  .filter-items {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .header-buttons {
-    width: 100%;
-  }
-
-  .btn-header {
-    flex: 1;
-    min-width: 140px;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    padding: 24px 12px;
-  }
-
-  h1 {
-    font-size: 1.4rem;
-  }
-
-  .subtitle {
-    font-size: 0.9rem;
-  }
-
-  .kpi-section {
-    grid-template-columns: 1fr;
-  }
-
-  .filter-items {
-    grid-template-columns: 1fr;
-  }
-
-  .header-buttons {
-    flex-direction: column;
-  }
-
-  .btn-header {
-    width: 100%;
-  }
-
-  .dashboard-grid {
-    gap: 20px;
-  }
-
-  .chart-card {
-    padding: 20px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mateus Renato - Currículo Interativo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #d4d4d8 0%, #e4e4e7 50%, #f0f0f3 100% );
+      color: #3f3f46;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #a1a1a6 0%, #b4b4b9 50%, #c9c9ce 100%);
+      padding: 48px 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    .header-content { max-width: 1400px; margin: 0 auto; text-align: center; }
+    h1 { color: #ffffff; font-size: 3rem; font-weight: 700; margin-bottom: 12px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); }
+    .subtitle { color: rgba(255, 255, 255, 0.95); font-size: 1.2rem; margin-bottom: 24px; font-weight: 500; }
+    .header-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-header {
+      padding: 14px 28px; border: none; border-radius: 10px; cursor: pointer;
+      font-weight: 600; transition: all 0.3s ease; font-size: 0.95rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .btn-whats { background: linear-gradient(135deg, #25d366 0%, #1eae5a 100%); color: white; }
+    .btn-whats:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4); }
+    .btn-linkedin { background: linear-gradient(135deg, #0a66c2 0%, #084a94 100%); color: white; }
+    .btn-linkedin:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(10, 102, 194, 0.4); }
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+    .kpi-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
+    .kpi-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%);
+      border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease; border-left: 5px solid #a1a1a6;
+    }
+    .kpi-card:hover { transform: translateY(-6px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12); border-left-color: #7a7a7f; }
+    .kpi-value { font-size: 3rem; font-weight: 700; color: #a1a1a6; margin-bottom: 8px; }
+    .kpi-label { font-size: 0.85rem; color: #a1a1a6; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+    .filter-section { background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%); border-radius: 16px; padding: 28px; margin-bottom: 40px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .filter-title { color: #3f3f46; font-size: 0.9rem; text-transform: uppercase; font-weight: 700; margin-bottom: 20px; letter-spacing: 1px; }
+    .filter-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+    .filter-item {
+      padding: 16px 18px; background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%);
+      border: 2px solid #e4e4e7; border-radius: 10px; cursor: pointer;
+      transition: all 0.3s ease; color: #3f3f46; font-weight: 600; text-align: center;
+    }
+    .filter-item:hover { background: linear-gradient(135deg, #e8e8eb 0%, #dcdce0 100%); border-color: #a1a1a6; color: #a1a1a6; transform: translateY(-2px); }
+    .filter-item.active { background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%); border-color: #7a7a7f; color: #ffffff; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 28px; margin-bottom: 40px; }
+    .chart-card { background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%); border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .chart-title { color: #3f3f46; font-size: 0.95rem; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 3px solid #d4d4d8; padding-bottom: 14px; }
+    canvas { max-height: 340px; }
+    .results-section { background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%); border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); margin-bottom: 40px; }
+    .results-title { color: #3f3f46; font-size: 0.95rem; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 3px solid #d4d4d8; padding-bottom: 14px; }
+    .result-item { background: linear-gradient(135deg, rgba(161, 161, 166, 0.08) 0%, rgba(180, 180, 185, 0.08) 100%); border-left: 4px solid #a1a1a6; padding: 16px 18px; margin-bottom: 14px; border-radius: 8px; color: #3f3f46; transition: all 0.3s ease; }
+    .result-item:hover { background: linear-gradient(135deg, rgba(161, 161, 166, 0.15) 0%, rgba(180, 180, 185, 0.15) 100%); transform: translateX(6px); border-left-color: #7a7a7f; }
+    .skills-section { background: linear-gradient(135deg, #ffffff 0%, #f9f9fb 100%); border-radius: 16px; padding: 28px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .skills-title { color: #3f3f46; font-size: 0.95rem; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 3px solid #d4d4d8; padding-bottom: 14px; }
+    .skills-container { display: flex; flex-wrap: wrap; gap: 12px; }
+    .skill-tag { background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%); border: 1px solid #e4e4e7; color: #3f3f46; padding: 12px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; }
+    .skill-tag:hover { background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%); border-color: #7a7a7f; color: #ffffff; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+    .skill-tag.main { background: linear-gradient(135deg, #a1a1a6 0%, #7a7a7f 100%); border-color: #7a7a7f; color: #ffffff; font-weight: 600; }
+    .proficiency-item { margin-bottom: 20px; }
+    .proficiency-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; }
+    .proficiency-label { color: #3f3f46; font-weight: 600; }
+    .proficiency-value { color: #a1a1a6; font-weight: 700; }
+    .proficiency-bar { background: linear-gradient(135deg, #f0f0f3 0%, #e8e8eb 100%); border-radius: 8px; height: 12px; overflow: hidden; border: 1px solid #e4e4e7; }
+    .proficiency-fill { background: linear-gradient(90deg, #5a5a5f 0%, #3f3f46 100%); height: 100%; border-radius: 8px; transition: width 0.5s ease; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+    @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } h1 { font-size: 2.2rem; } }
+    @media (max-width: 768px) { .header { padding: 32px 16px; } h1 { font-size: 1.8rem; } .subtitle { font-size: 1rem; } .kpi-section { grid-template-columns: repeat(2, 1fr); } .kpi-value { font-size: 2.2rem; } .container { padding: 24px 16px; } .filter-items { grid-template-columns: repeat(2, 1fr); } .header-buttons { width: 100%; } .btn-header { flex: 1; min-width: 140px; } }
+    @media (max-width: 480px) { .header { padding: 24px 12px; } h1 { font-size: 1.4rem; } .subtitle { font-size: 0.9rem; } .kpi-section { grid-template-columns: 1fr; } .filter-items { grid-template-columns: 1fr; } .header-buttons { flex-direction: column; } .btn-header { width: 100%; } .dashboard-grid { gap: 20px; } .chart-card { padding: 20px; } }
+  </style>
 </head>
-
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-content">
-    <h1>Mateus Renato</h1>
-    <p class="subtitle" id="titulo">Gestão | Dados | Performance e Resultados</p>
-    <div class="header-buttons">
-      <button class="btn-header btn-whats" onclick="zap()">💬 WhatsApp</button>
-      <button class="btn-header btn-linkedin" onclick="linkedin()">💼 LinkedIn</button>
-    </div>
-  </div>
-</div>
-
-<!-- CONTAINER PRINCIPAL -->
-<div class="container">
-
-  <!-- KPI CARDS -->
-  <div class="kpi-section" id="kpis"></div>
-
-  <!-- FILTRO DE EXPERIÃNCIAS -->
-  <div class="filter-section" id="filtro-section">
-    <div class="filter-title">Filtrar por Experiência</div>
-    <div class="filter-items" id="filtro"></div>
-  </div>
-
-  <!-- GRID DE GRÁFICOS -->
-  <div class="dashboard-grid">
-    <div class="chart-card">
-      <div class="chart-title">Proficiência por Skill</div>
-      <canvas id="chart"></canvas>
-    </div>
-
-    <div class="chart-card">
-      <div class="chart-title">Análise de Experiências</div>
-      <canvas id="compare"></canvas>
-    </div>
-  </div>
-
-  <!-- RANKING -->
-  <div class="chart-card" style="margin-bottom: 40px;">
-    <div class="chart-title">Ranking de Competências</div>
-    <canvas id="ranking"></canvas>
-  </div>
-
-  <!-- RESULTADOS -->
-  <div class="results-section">
-    <div class="results-title">Resultados Alcançados</div>
-    <div id="res"></div>
-  </div>
-
-  <!-- SKILLS E PROFICIÊNCIA -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px;">
-    <div class="skills-section">
-      <div class="skills-title">Competências</div>
-      <div class="skills-container" id="skills"></div>
-    </div>
-
-    <div class="skills-section">
-      <div class="skills-title">Nível de Proficiência</div>
-      <div id="proficiency"></div>
-    </div>
-  </div>
-
-</div>
-
-<script>
-
-let dados;
-let chart;
-let compareChart;
-let rankingChart;
-
-const skillProficiency = {"Gest\u00e3o": 5, "KPI": 4, "Excel": 4, "Processos": 4, "Estrat\u00e9gia": 4, "An\u00e1lise de Dados": 4, "Vendas": 3, "Relacionamento": 4, "Performance": 4, "Financeiro": 4, "Lideran\u00e7a": 5};
-const apiUrl = "https://cv-interativo.onrender.com/cv";
-const whatsappUrl = "https://wa.me/5515991290379";
-const linkedinUrl = "https://www.linkedin.com/in/mateus-renato-k-silva";
-
-async function load(){
-  try {
-    const r = await fetch(apiUrl);
-    
-    if (!r.ok) {
-      throw new Error("Erro ao carregar dados");
-    }
-    
-    dados = await r.json();
-
-    document.getElementById("titulo").innerText = dados.titulo;
-
-    loadKPIs();
-    loadFiltro();
-    buildCompare(null);
-    buildRanking();
-
-    setTimeout(() => {
-      const first = document.querySelector(".filter-item");
-      if (first) first.click();
-    }, 300);
-
-  } catch (error) {
-    console.error("Erro:", error);
-    document.querySelector("h1").innerHTML = "❌ Erro ao carregar";
-    document.getElementById("titulo").innerHTML = "Não foi possível conectar à API";
-  }
-}
-
-function loadKPIs() {
-  const totalExperiencias = dados.experiencias.length;
-  const totalResultados = dados.resultados.length;
-  const totalSkills = new Set(dados.experiencias.flatMap(e => e.skills)).size;
-  const anosExperiencia = 16;
-
-  const kpisHTML = `
-    <div class="kpi-card" onclick="scrollToFilter()" style="cursor: pointer;">
-      <div class="kpi-value">${totalExperiencias}</div>
-      <div class="kpi-label">Experiências</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-value">${anosExperiencia}</div>
-      <div class="kpi-label">Anos de Atuação</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-value">${totalSkills}</div>
-      <div class="kpi-label">Competências</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-value">${totalResultados}</div>
-      <div class="kpi-label">Resultados</div>
-    </div>
-  `;
-
-  document.getElementById("kpis").innerHTML = kpisHTML;
-}
-
-function loadFiltro() {
-  let filtroHTML = '';
-
-  dados.experiencias.forEach(e => {
-    filtroHTML += `
-      <div class="filter-item" onclick="select(this, '${e.id}')">
-        ${e.empresa}
+  <div class="header">
+    <div class="header-content">
+      <h1>Mateus Renato</h1>
+      <p class="subtitle" id="titulo">Carregando perfil...</p>
+      <div class="header-buttons">
+        <button class="btn-header btn-whats" onclick="zap()">💬 WhatsApp</button>
+        <button class="btn-header btn-linkedin" onclick="linkedin()">💼 LinkedIn</button>
       </div>
-    `;
-  });
+    </div>
+  </div>
 
-  document.getElementById("filtro").innerHTML = filtroHTML;
-}
-
-function select(el, expId) {
-  document.querySelectorAll(".filter-item").forEach(x => x.classList.remove("active"));
-  el.classList.add("active");
-
-  const exp = dados.experiencias.find(e => e.id === expId);
-  if (!exp) return;
-  
-  // Atualizar gráfico de comparação com destaque
-  buildCompare(expId);
-
-  // Resultados
-  let res = dados.resultados.filter(r => r.relacionados.includes(expId));
-
-  let rdiv = document.getElementById("res");
-  rdiv.innerHTML = "";
-  res.forEach(x => {
-    let d = document.createElement("div");
-    d.className = "result-item";
-    d.innerText = "✓ " + x.nome;
-    rdiv.appendChild(d);
-  });
-
-  let sdiv = document.getElementById("skills");
-  sdiv.innerHTML = "";
-
-  exp.skills.forEach(s => {
-    let d = document.createElement("div");
-    d.className = "skill-tag";
-
-    if(s == "Gestão") d.classList.add("main");
-
-    d.innerText = s;
-    sdiv.appendChild(d);
-  });
-
-  let profDiv = document.getElementById("proficiency");
-  profDiv.innerHTML = "";
-
-  exp.skills.forEach(s => {
-    const profValue = skillProficiency[s] || 3;
-    const percentage = (profValue / 5) * 100;
-
-    let profHTML = `
-      <div class="proficiency-item">
-        <div class="proficiency-header">
-          <span class="proficiency-label">${s}</span>
-          <span class="proficiency-value">${profValue}/5</span>
-        </div>
-        <div class="proficiency-bar">
-          <div class="proficiency-fill" style="width: ${percentage}%"></div>
-        </div>
+  <div class="container">
+    <div class="kpi-section" id="kpis">
+      <div class="kpi-card">
+        <div class="kpi-value">...</div>
+        <div class="kpi-label">Experiências</div>
       </div>
-    `;
+      <div class="kpi-card">
+        <div class="kpi-value">...</div>
+        <div class="kpi-label">Anos de Atuação</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">...</div>
+        <div class="kpi-label">Competências</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">...</div>
+        <div class="kpi-label">Resultados</div>
+      </div>
+    </div>
 
-    profDiv.innerHTML += profHTML;
-  });
+    <div class="filter-section" id="filtro-section">
+      <div class="filter-title">Filtrar por Experiência</div>
+      <div class="filter-items" id="filtro">
+        <!-- Itens injetados via JS -->
+      </div>
+    </div>
 
-  if(chart) chart.destroy();
+    <div class="dashboard-grid">
+      <div class="chart-card">
+        <div class="chart-title">Proficiência por Skill</div>
+        <canvas id="chart"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Análise de Experiências</div>
+        <canvas id="compare"></canvas>
+      </div>
+    </div>
 
-  const colors = [
-    'rgba(161, 161, 166, 0.8)',
-    'rgba(180, 180, 185, 0.8)',
-    'rgba(122, 122, 127, 0.8)',
-    'rgba(143, 143, 148, 0.8)',
-    'rgba(165, 165, 170, 0.8)',
-    'rgba(200, 200, 205, 0.8)',
-  ];
+    <div class="chart-card" style="margin-bottom: 40px;">
+      <div class="chart-title">Ranking de Competências</div>
+      <canvas id="ranking"></canvas>
+    </div>
 
-  const borderColors = [
-    'rgb(161, 161, 166)',
-    'rgb(180, 180, 185)',
-    'rgb(122, 122, 127)',
-    'rgb(143, 143, 148)',
-    'rgb(165, 165, 170)',
-    'rgb(200, 200, 205)',
-  ];
+    <div class="results-section">
+      <div class="results-title">Resultados Alcançados</div>
+      <div id="res">
+        <div class="result-item">Selecione uma experiência acima</div>
+      </div>
+    </div>
 
-  const proficiencies = exp.skills.map(s => skillProficiency[s] || 3);
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px;">
+      <div class="skills-section">
+        <div class="skills-title">Competências</div>
+        <div class="skills-container" id="skills"></div>
+      </div>
+      <div class="skills-section">
+        <div class="skills-title">Nível de Proficiência</div>
+        <div id="proficiency"></div>
+      </div>
+    </div>
+  </div>
 
-  chart = new Chart(document.getElementById("chart"), {
-    type: "bar",
-    data: {
-      labels: exp.skills,
-      datasets: [{
-        label: "Proficiência",
-        data: proficiencies,
-        backgroundColor: colors.slice(0, exp.skills.length),
-        borderColor: borderColors.slice(0, exp.skills.length),
-        borderWidth: 1,
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      indexAxis: 'y',
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          max: 5,
-          ticks: { color: '#a1a1a6' },
-          grid: { color: 'rgba(0, 0, 0, 0.05)' }
-        },
-        y: {
-          ticks: { color: '#a1a1a6' },
-          grid: { display: false }
-        }
+  <script>
+    let dados;
+    let chart;
+    let compareChart;
+    let rankingChart;
+
+    const skillProficiency = {"Gestão": 5, "KPI": 4, "Excel": 4, "Processos": 4, "Estratégia": 4, "Análise de Dados": 4, "Vendas": 3, "Relacionamento": 4, "Performance": 4, "Financeiro": 4, "Liderança": 5};
+    const apiUrl = "https://cv-interativo.onrender.com/cv";
+    const whatsappUrl = "https://wa.me/5515991290379";
+    const linkedinUrl = "https://www.linkedin.com/in/mateus-renato-k-silva";
+
+    async function load( ){
+      try {
+        const r = await fetch(apiUrl);
+        if (!r.ok) throw new Error("Erro ao carregar dados");
+        
+        dados = await r.json();
+        document.getElementById("titulo").innerText = dados.titulo;
+
+        loadKPIs();
+        loadFiltro();
+        buildCompare(null);
+        buildRanking();
+
+        setTimeout(() => {
+          const first = document.querySelector(".filter-item");
+          if (first) first.click();
+        }, 300);
+
+      } catch (error) {
+        console.error("Erro:", error);
+        document.querySelector("h1").innerHTML = "❌ API Acordando...";
+        document.getElementById("titulo").innerHTML = "Por favor, aguarde 30 segundos e atualize a página.";
       }
     }
-  });
-}
 
-function buildCompare(selectedExpId = null){
-  if(compareChart) compareChart.destroy();
+    function loadKPIs() {
+      const totalExperiencias = dados.experiencias.length;
+      const totalResultados = dados.resultados.length;
+      const totalSkills = new Set(dados.experiencias.flatMap(e => e.skills)).size;
+      const anosExperiencia = 16;
 
-  let labels = dados.experiencias.map(e => e.empresa);
-  let data = dados.experiencias.map(e => e.skills.length);
-  
-  const colors = dados.experiencias.map(e => 
-    e.id === selectedExpId ? 'rgba(90, 90, 95, 0.9)' : 'rgba(161, 161, 166, 0.6)'
-  );
-  
-  const borderColors = dados.experiencias.map(e => 
-    e.id === selectedExpId ? 'rgb(90, 90, 95)' : 'rgb(161, 161, 166)'
-  );
+      document.getElementById("kpis").innerHTML = `
+        <div class="kpi-card" onclick="scrollToFilter()" style="cursor: pointer;">
+          <div class="kpi-value">${totalExperiencias}</div>
+          <div class="kpi-label">Experiências</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">${anosExperiencia}</div>
+          <div class="kpi-label">Anos de Atuação</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">${totalSkills}</div>
+          <div class="kpi-label">Competências</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-value">${totalResultados}</div>
+          <div class="kpi-label">Resultados</div>
+        </div>
+      `;
+    }
 
-  compareChart = new Chart(document.getElementById("compare"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Quantidade de Skills por Experiência",
-        data: data,
-        backgroundColor: colors,
-        borderColor: borderColors,
-        borderWidth: 2,
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          labels: {
-            color: '#3f3f46',
-            font: { size: 12, weight: 'bold' }
+    function loadFiltro() {
+      let filtroHTML = '';
+      dados.experiencias.forEach(e => {
+        filtroHTML += `<div class="filter-item" onclick="select(this, '${e.id}')">${e.empresa}</div>`;
+      });
+      document.getElementById("filtro").innerHTML = filtroHTML;
+    }
+
+    function select(el, expId) {
+      document.querySelectorAll(".filter-item").forEach(x => x.classList.remove("active"));
+      el.classList.add("active");
+
+      const exp = dados.experiencias.find(e => e.id === expId);
+      if (!exp) return;
+      
+      buildCompare(expId);
+
+      let res = dados.resultados.filter(r => r.relacionados.includes(expId));
+      let rdiv = document.getElementById("res");
+      rdiv.innerHTML = "";
+      res.forEach(x => {
+        let d = document.createElement("div");
+        d.className = "result-item";
+        d.innerText = "✓ " + x.nome;
+        rdiv.appendChild(d);
+      });
+
+      let sdiv = document.getElementById("skills");
+      sdiv.innerHTML = "";
+      exp.skills.forEach(s => {
+        let d = document.createElement("div");
+        d.className = "skill-tag";
+        if(s == "Gestão") d.classList.add("main");
+        d.innerText = s;
+        sdiv.appendChild(d);
+      });
+
+      let profDiv = document.getElementById("proficiency");
+      profDiv.innerHTML = "";
+      exp.skills.forEach(s => {
+        const profValue = skillProficiency[s] || 3;
+        const percentage = (profValue / 5) * 100;
+        profDiv.innerHTML += `
+          <div class="proficiency-item">
+            <div class="proficiency-header">
+              <span class="proficiency-label">${s}</span>
+              <span class="proficiency-value">${profValue}/5</span>
+            </div>
+            <div class="proficiency-bar">
+              <div class="proficiency-fill" style="width: ${percentage}%"></div>
+            </div>
+          </div>`;
+      });
+
+      updateRadarChart(exp);
+    }
+
+    function updateRadarChart(exp) {
+      if(chart) chart.destroy();
+      const proficiencies = exp.skills.map(s => skillProficiency[s] || 3);
+      chart = new Chart(document.getElementById("chart"), {
+        type: "bar",
+        data: {
+          labels: exp.skills,
+          datasets: [{
+            label: "Proficiência",
+            data: proficiencies,
+            backgroundColor: 'rgba(161, 161, 166, 0.8)',
+            borderColor: 'rgb(161, 161, 166)',
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, max: 5, ticks: { color: '#a1a1a6' } },
+            y: { ticks: { color: '#a1a1a6' } }
           }
         }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: { color: '#a1a1a6' },
-          grid: { color: 'rgba(0, 0, 0, 0.05)' }
-        },
-        x: {
-          ticks: { color: '#a1a1a6' },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-}
-
-function buildRanking(){
-  if(rankingChart) rankingChart.destroy();
-
-  let count = {};
-
-  dados.experiencias.forEach(e => {
-    e.skills.forEach(s => {
-      count[s] = (count[s] || 0) + 1;
-    });
-  });
-
-  const labels = Object.keys(count);
-  const values = Object.values(count);
-
-  const colors = [
-    'rgba(161, 161, 166, 0.8)',
-    'rgba(180, 180, 185, 0.8)',
-    'rgba(122, 122, 127, 0.8)',
-    'rgba(143, 143, 148, 0.8)',
-    'rgba(165, 165, 170, 0.8)',
-    'rgba(200, 200, 205, 0.8)',
-    'rgba(210, 210, 215, 0.8)',
-    'rgba(130, 130, 135, 0.8)',
-    'rgba(150, 150, 155, 0.8)',
-    'rgba(175, 175, 180, 0.8)',
-    'rgba(190, 190, 195, 0.8)',
-  ];
-
-  const borderColors = [
-    'rgb(161, 161, 166)',
-    'rgb(180, 180, 185)',
-    'rgb(122, 122, 127)',
-    'rgb(143, 143, 148)',
-    'rgb(165, 165, 170)',
-    'rgb(200, 200, 205)',
-    'rgb(210, 210, 215)',
-    'rgb(130, 130, 135)',
-    'rgb(150, 150, 155)',
-    'rgb(175, 175, 180)',
-    'rgb(190, 190, 195)',
-  ];
-
-  rankingChart = new Chart(document.getElementById("ranking"), {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Frequência",
-        data: values,
-        backgroundColor: colors.slice(0, labels.length),
-        borderColor: borderColors.slice(0, labels.length),
-        borderWidth: 1,
-        borderRadius: 6
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { color: '#a1a1a6' },
-          grid: { color: 'rgba(0, 0, 0, 0.05)' }
-        },
-        y: {
-          ticks: { color: '#a1a1a6' },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-}
-
-function scrollToFilter() {
-  // Scroll automático para filtro em mobile
-  if (window.innerWidth <= 768) {
-    setTimeout(() => {
-      document.getElementById("filtro-section").scrollIntoView({ 
-        behavior: "smooth", 
-        block: "start" 
       });
-    }, 100);
-  }
-}
+    }
 
-function zap(){
-  fetch("https://cv-interativo.onrender.com/cv/track-click", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({origem:"whatsapp"})
-  }).catch(e => console.error("Erro:", e));
+    function buildCompare(selectedExpId = null){
+      if(compareChart) compareChart.destroy();
+      let labels = dados.experiencias.map(e => e.empresa);
+      let data = dados.experiencias.map(e => e.skills.length);
+      const colors = dados.experiencias.map(e => e.id === selectedExpId ? 'rgba(90, 90, 95, 0.9)' : 'rgba(161, 161, 166, 0.6)');
+      
+      compareChart = new Chart(document.getElementById("compare"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Skills por Experiência",
+            data: data,
+            backgroundColor: colors,
+            borderColor: 'rgb(161, 161, 166)',
+            borderWidth: 2,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, ticks: { color: '#a1a1a6' } },
+            x: { ticks: { color: '#a1a1a6' } }
+          }
+        }
+      });
+    }
 
-  window.open(whatsappUrl);
-}
+    function buildRanking(){
+      if(rankingChart) rankingChart.destroy();
+      let count = {};
+      dados.experiencias.forEach(e => {
+        e.skills.forEach(s => { count[s] = (count[s] || 0) + 1; });
+      });
+      const labels = Object.keys(count);
+      const values = Object.values(count);
 
-function linkedin(){
-  fetch("https://cv-interativo.onrender.com/cv/track-click", {
-    method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({origem:"linkedin"})
-  }).catch(e => console.error("Erro:", e));
+      rankingChart = new Chart(document.getElementById("ranking"), {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Frequência",
+            data: values,
+            backgroundColor: 'rgba(122, 122, 127, 0.8)',
+            borderWidth: 1,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: '#a1a1a6' } },
+            y: { ticks: { color: '#a1a1a6' } }
+          }
+        }
+      });
+    }
 
-  window.open(linkedinUrl);
-}
+    function scrollToFilter() {
+      if (window.innerWidth <= 768) {
+        document.getElementById("filtro-section").scrollIntoView({ behavior: "smooth" });
+      }
+    }
 
-load();
+    function zap(){
+      fetch("https://cv-interativo.onrender.com/cv/track-click", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({origem:"whatsapp"} )
+      }).catch(e => console.error(e));
+      window.open(whatsappUrl);
+    }
 
-</script>
+    function linkedin(){
+      fetch("https://cv-interativo.onrender.com/cv/track-click", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({origem:"linkedin"} )
+      }).catch(e => console.error(e));
+      window.open(linkedinUrl);
+    }
 
+    load();
+  </script>
 </body>
 </html>
