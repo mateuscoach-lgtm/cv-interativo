@@ -1,27 +1,39 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
-import json
-import os
+from pydantic import BaseModel
+from typing import List
 
 app = FastAPI()
 
-# LIBERA ACESSO DO FRONTEND
+# Configuração de CORS para permitir acesso do seu site no Netlify
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Permite qualquer origem, incluindo seu site no Netlify
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Permite todos os métodos (GET, POST, etc.)
+    allow_headers=["*"],  # Permite todos os cabeçalhos
 )
 
-# =========================
-# DADOS DO CURRÍCULO
-# =========================
-CV_DATA = {
+class Experiencia(BaseModel):
+    id: str
+    empresa: str
+    periodo: str
+    skills: List[str]
+
+class Resultado(BaseModel):
+    nome: str
+    relacionados: List[str]
+
+class CV(BaseModel):
+    nome: str
+    titulo: str
+    experiencias: List[Experiencia]
+    resultados: List[Resultado]
+
+# Dados do Currículo
+cv_data = {
     "nome": "Mateus Renato",
     "titulo": "Gestão | Dados | Performance e Resultados",
-
     "experiencias": [
         {
             "id": "house",
@@ -48,7 +60,6 @@ CV_DATA = {
             "skills": ["Gestão", "Financeiro", "Liderança"]
         }
     ],
-
     "resultados": [
         {"nome": "Faturamento médio de R$ 70 mil/mês", "relacionados": ["house"]},
         {"nome": "Aumento da margem via otimização de cardápio", "relacionados": ["house"]},
@@ -61,58 +72,15 @@ CV_DATA = {
     ]
 }
 
-# =========================
-# FUNÇÃO DE TRACKING
-# =========================
-def salvar_tracking(dado):
-    arquivo = "tracking.json"
-
-    if os.path.exists(arquivo):
-        with open(arquivo, "r") as f:
-            dados = json.load(f)
-    else:
-        dados = []
-
-    dados.append(dado)
-
-    with open(arquivo, "w") as f:
-        json.dump(dados, f, indent=4)
-
-# =========================
-# ROTAS
-# =========================
-
-# HOME
 @app.get("/")
 def home():
-    return {"mensagem": "API do CV interativo está online 🚀"}
+    return {"status": "API Online", "endpoint": "/cv"}
 
-# CURRÍCULO
-@app.get("/cv")
-async def get_cv(request: Request, id: str = "anonimo"):
-    salvar_tracking({
-        "tipo": "visita",
-        "empresa": id,
-        "ip": request.client.host,
-        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
-    return CV_DATA
+@app.get("/cv", response_model=CV)
+def get_cv():
+    return cv_data
 
-# CLIQUES (WhatsApp / LinkedIn)
-@app.post("/track-click")
-async def track_click(data: dict):
-    salvar_tracking({
-        "tipo": "click",
-        "origem": data.get("origem"),
-        "empresa": data.get("empresa", "anonimo"),
-        "data": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    })
+@app.post("/cv/track-click")
+def track_click(data: dict):
+    print(f"Clique registrado: {data}")
     return {"status": "ok"}
-
-# VER TRACKING
-@app.get("/tracking")
-async def ver_tracking():
-    if os.path.exists("tracking.json"):
-        with open("tracking.json", "r") as f:
-            return json.load(f)
-    return []
