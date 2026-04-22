@@ -81,7 +81,7 @@
   <div class="header">
     <div class="header-content">
       <h1>Mateus Renato</h1>
-      <p class="subtitle" id="titulo">Carregando perfil...</p>
+      <p class="subtitle" id="titulo">Gestão | Dados | Performance e Resultados</p>
       <div class="header-buttons">
         <button class="btn-header btn-whats" onclick="zap()">💬 WhatsApp</button>
         <button class="btn-header btn-linkedin" onclick="linkedin()">💼 LinkedIn</button>
@@ -91,22 +91,7 @@
 
   <div class="container">
     <div class="kpi-section" id="kpis">
-      <div class="kpi-card">
-        <div class="kpi-value">...</div>
-        <div class="kpi-label">Experiências</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-value">...</div>
-        <div class="kpi-label">Anos de Atuação</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-value">...</div>
-        <div class="kpi-label">Competências</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-value">...</div>
-        <div class="kpi-label">Resultados</div>
-      </div>
+      <!-- KPIs injetados via JS -->
     </div>
 
     <div class="filter-section" id="filtro-section">
@@ -134,9 +119,7 @@
 
     <div class="results-section">
       <div class="results-title">Resultados Alcançados</div>
-      <div id="res">
-        <div class="result-item">Selecione uma experiência acima</div>
-      </div>
+      <div id="res"></div>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px;">
@@ -152,10 +135,30 @@
   </div>
 
   <script>
-    let dados;
-    let chart;
-    let compareChart;
-    let rankingChart;
+    // DADOS LOCAIS (FALLBACK) - Garante que o site nunca fique vazio
+    const localData = {
+      "nome": "Mateus Renato",
+      "titulo": "Gestão | Dados | Performance e Resultados",
+      "experiencias": [
+        {"id": "house", "empresa": "House One Burgers e Espetos", "periodo": "2023 - 2026", "skills": ["Gestão", "KPI", "Excel", "Processos", "Estratégia"]},
+        {"id": "original", "empresa": "Banco Original", "periodo": "2019 - 2023", "skills": ["Gestão", "Excel", "Análise de Dados", "Vendas", "KPI"]},
+        {"id": "bradesco_pf", "empresa": "Bradesco PF", "periodo": "2010 - 2014", "skills": ["Gestão", "Relacionamento", "Performance"]},
+        {"id": "bradesco_pj", "empresa": "Bradesco PJ", "periodo": "2014 - 2018", "skills": ["Gestão", "Financeiro", "Liderança"]}
+      ],
+      "resultados": [
+        {"nome": "Faturamento médio de R$ 70 mil/mês", "relacionados": ["house"]},
+        {"nome": "Aumento da margem via otimização de cardápio", "relacionados": ["house"]},
+        {"nome": "Expansão de carteira de 0 → +2000 clientes", "relacionados": ["original"]},
+        {"nome": "Atuação com clientes PF, PJ e alta renda", "relacionados": ["original"]},
+        {"nome": "LL de R$ 58 mil → R$ 70 mil", "relacionados": ["bradesco_pf"]},
+        {"nome": "Redução de base com aumento de rentabilidade", "relacionados": ["bradesco_pf"]},
+        {"nome": "Gestão de equipe de até 12 pessoas", "relacionados": ["bradesco_pj"]},
+        {"nome": "Atuação como gerente geral substituto", "relacionados": ["bradesco_pj"]}
+      ]
+    };
+
+    let dados = localData; // Começa com dados locais
+    let chart, compareChart, rankingChart;
 
     const skillProficiency = {"Gestão": 5, "KPI": 4, "Excel": 4, "Processos": 4, "Estratégia": 4, "Análise de Dados": 4, "Vendas": 3, "Relacionamento": 4, "Performance": 4, "Financeiro": 4, "Liderança": 5};
     const apiUrl = "https://cv-interativo.onrender.com/cv";
@@ -163,28 +166,34 @@
     const linkedinUrl = "https://www.linkedin.com/in/mateus-renato-k-silva";
 
     async function load( ){
+      // 1. Inicializa o site imediatamente com os dados locais
+      initDashboard();
+
+      // 2. Tenta buscar dados atualizados da API em segundo plano
       try {
         const r = await fetch(apiUrl);
-        if (!r.ok) throw new Error("Erro ao carregar dados");
-        
-        dados = await r.json();
-        document.getElementById("titulo").innerText = dados.titulo;
-
-        loadKPIs();
-        loadFiltro();
-        buildCompare(null);
-        buildRanking();
-
-        setTimeout(() => {
-          const first = document.querySelector(".filter-item");
-          if (first) first.click();
-        }, 300);
-
+        if (r.ok) {
+          const apiDados = await r.json();
+          dados = apiDados; // Atualiza para os dados da API
+          initDashboard(); // Re-inicializa com os dados novos da API
+          console.log("Dados atualizados via API");
+        }
       } catch (error) {
-        console.error("Erro:", error);
-        document.querySelector("h1").innerHTML = "❌ API Acordando...";
-        document.getElementById("titulo").innerHTML = "Por favor, aguarde 30 segundos e atualize a página.";
+        console.warn("API offline ou demorando. Usando dados locais pré-carregados.");
       }
+    }
+
+    function initDashboard() {
+      loadKPIs();
+      loadFiltro();
+      buildCompare(null);
+      buildRanking();
+      
+      // Seleciona o primeiro item automaticamente
+      setTimeout(() => {
+        const first = document.querySelector(".filter-item");
+        if (first) first.click();
+      }, 100);
     }
 
     function loadKPIs() {
@@ -209,8 +218,7 @@
         <div class="kpi-card">
           <div class="kpi-value">${totalResultados}</div>
           <div class="kpi-label">Resultados</div>
-        </div>
-      `;
+        </div>`;
     }
 
     function loadFiltro() {
@@ -267,19 +275,14 @@
           </div>`;
       });
 
-      updateRadarChart(exp);
-    }
-
-    function updateRadarChart(exp) {
       if(chart) chart.destroy();
-      const proficiencies = exp.skills.map(s => skillProficiency[s] || 3);
       chart = new Chart(document.getElementById("chart"), {
         type: "bar",
         data: {
           labels: exp.skills,
           datasets: [{
             label: "Proficiência",
-            data: proficiencies,
+            data: exp.skills.map(s => skillProficiency[s] || 3),
             backgroundColor: 'rgba(161, 161, 166, 0.8)',
             borderColor: 'rgb(161, 161, 166)',
             borderWidth: 1,
@@ -386,5 +389,8 @@
 
     load();
   </script>
+</body>
+</html>
+
 </body>
 </html>
